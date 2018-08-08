@@ -10,17 +10,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
 public class WatchMoodleSketch extends PApplet
 {
     private int frame = 0;
-    private static List<Sticks>    sticks;
-    private static List<Snow>      snowes;
-    private static List<Ring>      rings;
-    private static List<FireWorks> fireworks;
+    private Map<Integer, List<MoodleObject>> objects;
 
     float multX, multY;
     float theirX, theirY;
@@ -30,11 +31,6 @@ public class WatchMoodleSketch extends PApplet
 
     private MoodleButton pauseButton, playButton, stopButton;
     private MoodleSlider slider;
-
-    private int lastStick = 0;
-    private int lastSnow = 0;
-    private int lastRing = 0;
-    private int lastFire = 0;
 
     private boolean render = false;
 
@@ -57,10 +53,8 @@ public class WatchMoodleSketch extends PApplet
     {
         background(0);
         orientation(LANDSCAPE);
-        sticks  = new ArrayList<>();
-        snowes  = new ArrayList<>();
-        rings   = new ArrayList<>();
-        fireworks = new ArrayList<>();
+
+        objects = new HashMap<>();
 
         pauseButton = new MoodleButton(30, height - 100, 95, 95, loadImage("pause_button.png"));
         playButton = new MoodleButton(30, height - 100, 95, 95, loadImage("play_button.png"));
@@ -125,57 +119,22 @@ public class WatchMoodleSketch extends PApplet
                 frame = 0;
                 WatchMoodle.Companion.musicSeekTo(0);
                 WatchMoodle.Companion.pauseMusic();
-                lastStick = 0;
-                lastSnow = 0;
-                lastRing = 0;
-                lastFire = 0;
-                for(Sticks stick: sticks)
-                    stick.reset();
-                for(Snow snow: snowes)
-                    snow.reset();
-                for(Ring ring: rings)
-                    ring.reset();
-                for (FireWorks f: fireworks)
-                    f.reset();
             }
         }
-
-        for(int i=lastStick; i<sticks.size(); i++)
+        for (int i = frame - 500; i <= frame; i++)
         {
-            if(sticks.get(i).time < frame - 500 || sticks.get(i).time > frame)
+            if (!objects.containsKey(i))
                 continue;
-            sticks.get(i).update();
-            sticks.get(i).display();
-            if(sticks.get(i).alpha <= 0)
-                lastStick = i;
+            for (int j = 0; j <objects.get(i).size(); j++)
+            {
+                objects.get(i).get(j).update();
+                objects.get(i).get(j).display();
+            }
         }
-        for(int i=lastSnow; i<snowes.size(); i++)
-        {
-            if(snowes.get(i).time < frame - 500 || snowes.get(i).time > frame)
-                continue;
-            snowes.get(i).update();
-            snowes.get(i).display();
-            if(snowes.get(i).alpha <= 0)
-                lastSnow = i;
-        }
-        for(int i = lastRing; i < rings.size(); i++)
-        {
-            if(rings.get(i).time < frame - 500 || rings.get(i).time > frame)
-                continue;
-            rings.get(i).update();
-            rings.get(i).display();
-            if(rings.get(i).alpha <= 0)
-                lastRing = i;
-        }
-        for (int i = lastFire; i < fireworks.size(); i++)
-        {
-            if(fireworks.get(i).t < frame - 500 || fireworks.get(i).t > frame)
-                continue;
-            fireworks.get(i).update();
-            fireworks.get(i).display();
-            if(fireworks.get(i).alpha <= 0)
-                lastFire = i;
-        }
+        textSize(100);
+        stroke(255);
+        fill(255);
+        text(frameRate, 10, 100);
 
         if (render)
             saveFrame(getActivity().getFilesDir()+"/render"+"/"+"######.png");
@@ -202,7 +161,7 @@ public class WatchMoodleSketch extends PApplet
     {
         String[] config = WatchMoodle.Companion.getConfig();
         theirX = Float.parseFloat(config[1].split(" ")[0]);
-        theirY = Float.parseFloat(config[1].split(" ")[0]);
+        theirY = Float.parseFloat(config[1].split(" ")[1]);
 
         multX = width / theirX;
         multY = height / theirY;
@@ -210,27 +169,43 @@ public class WatchMoodleSketch extends PApplet
         {
             if(config[i].split(" ")[0].equals("stick"))
             {
-                sticks.add(new Sticks((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                        parseInt(config[i].split(" ")[3])));
+                Sticks s = new Sticks((int)(parseInt(config[i].split(" ")[1]) * multX),
+                            (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                            parseInt(config[i].split(" ")[3]));
+                int f = parseInt(config[i].split(" ")[3]);
+                if (!objects.containsKey(f))
+                    objects.put(f, new ArrayList<MoodleObject>());
+                objects.get(f).add(s);
             }
             else if(config[i].split(" ")[0].equals("snow"))
             {
-                snowes.add(new Snow((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                        parseInt(config[i].split(" ")[3])));
+                Snow s = (new Snow((int)(parseInt(config[i].split(" ")[1]) * multX),
+                            (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                            parseInt(config[i].split(" ")[3])));
+                int f = parseInt(config[i].split(" ")[3]);
+                if (!objects.containsKey(f))
+                    objects.put(f, new ArrayList<MoodleObject>());
+                objects.get(f).add(s);
             }
             else if(config[i].split(" ")[0].equals("ring"))
             {
-                rings.add(new Ring((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 5,
-                        parseInt(config[i].split(" ")[3])));
+                Ring s = (new Ring((int)(parseInt(config[i].split(" ")[1]) * multX),
+                            (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 5,
+                            parseInt(config[i].split(" ")[3])));
+                int f = parseInt(config[i].split(" ")[3]);
+                if (!objects.containsKey(f))
+                    objects.put(f, new ArrayList<MoodleObject>());
+                objects.get(f).add(s);
             }
             else if(config[i].split(" ")[0].equals("fireworks"))
             {
-                fireworks.add(new FireWorks((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY),
-                        parseInt(config[i].split(" ")[3])));
+                FireWorks s = (new FireWorks((int)(parseInt(config[i].split(" ")[1]) * multX),
+                                (int)(parseInt(config[i].split(" ")[2]) * multY),
+                                parseInt(config[i].split(" ")[3])));
+                int f = parseInt(config[i].split(" ")[3]);
+                if (!objects.containsKey(f))
+                    objects.put(f, new ArrayList<MoodleObject>());
+                objects.get(f).add(s);
             }
             else
                 continue;
@@ -241,59 +216,6 @@ public class WatchMoodleSketch extends PApplet
     @Override
     public void mouseReleased() {
         touchLock = false;
-    }
-
-    class Sticks implements Comparable<Sticks> {
-        int posX, posY;
-        int red, green, blue;
-        int alpha;
-        int fadeSpeed;
-        float size, originalSize;
-        int time;
-
-        Sticks(int posX, int posY, int fadeSpeed, float originalSize, int time) {
-            this.posX = posX;
-            this.posY = posY;
-            this.fadeSpeed = fadeSpeed;
-            this.originalSize = originalSize;
-            this.time = time;
-            this.red = posX % 255;
-            this.blue = posY % 255;
-            this.green = (posX * posY) % 255;
-            this.size = originalSize;
-            this.alpha = 255;
-        }
-
-        public void reset()
-        {
-            alpha = 255;
-            size = originalSize;
-        }
-
-        public void update()
-        {
-            alpha -= fadeSpeed;
-            if(size >= 1)
-                size -= .4;
-        }
-
-        public void display()
-        {
-            stroke(this.red, this.green, this.blue, this.alpha);
-            strokeWeight(this.size);
-            line(posX, posY, posX, height - posY);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.time;
-
-        }
-
-        @Override
-        public int compareTo(Sticks o) {
-            return (this.time - o.time) ;
-        }
     }
 
     class MoodleButton {
@@ -386,7 +308,61 @@ public class WatchMoodleSketch extends PApplet
         }
     }
 
-    class Snow implements Comparable<Snow> {
+    class Sticks implements Comparable<Sticks>,MoodleObject
+    {
+        int posX, posY;
+        int red, green, blue;
+        int alpha;
+        int fadeSpeed;
+        float size, originalSize;
+        int time;
+
+        Sticks(int posX, int posY, int fadeSpeed, float originalSize, int time) {
+            this.posX = posX;
+            this.posY = posY;
+            this.fadeSpeed = fadeSpeed;
+            this.originalSize = originalSize;
+            this.time = time;
+            this.red = posX % 255;
+            this.blue = posY % 255;
+            this.green = (posX * posY) % 255;
+            this.size = originalSize;
+            this.alpha = 255;
+        }
+
+        public void reset()
+        {
+            alpha = 255;
+            size = originalSize;
+        }
+
+        public void update()
+        {
+            alpha -= fadeSpeed;
+            if(size >= 1)
+                size -= .4;
+        }
+
+        public void display()
+        {
+            stroke(this.red, this.green, this.blue, this.alpha);
+            strokeWeight(this.size);
+            line(posX, posY, posX, height - posY);
+        }
+
+        @Override
+        public int hashCode() {
+            return this.time;
+
+        }
+
+        @Override
+        public int compareTo(Sticks o) {
+            return (this.time - o.time) ;
+        }
+    }
+
+    class Snow implements Comparable<Snow>, MoodleObject{
         int posX, posY;
         int red, green, blue;
         int alpha;
@@ -440,7 +416,7 @@ public class WatchMoodleSketch extends PApplet
 
     }
 
-    class Ring implements Comparable<Ring> {
+    class Ring implements Comparable<Ring>, MoodleObject {
         int posX, posY;
         int red, green, blue;
         int alpha;
@@ -493,47 +469,66 @@ public class WatchMoodleSketch extends PApplet
         }
     }
 
-    class FireWorks implements Comparable<FireWorks>
+    class FireWorks implements Comparable<FireWorks>, MoodleObject
     {
         int x,y,t;
         int red, green, blue;
         int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6;
-
+        int x11,y11,x21,y21,x31,y31,x41,y41,x51,y51,x61,y61;
         int alpha;
+        int originalSize, size;
+
         FireWorks(int x, int y, int t)
         {
             this.x = x;
             this.y = y;
             this.t = t;
             x1 = x2 = x3 = x4 = x5 = x6 = x;
+            x11 = x21 = x31 = x41 = x51 = x61 = x;
             y1 = y2 = y3 = y4 = y5 = y6 = y;
+            y11 = y21 = y31 = y41 = y51 = y61 = y;
             alpha = 255;
             this.red = x % 255;
             this.blue = y % 255;
             this.green = (x * y) % 255;
+            originalSize = size;
+            this.size = originalSize;
         }
 
         public void update()
         {
             this.alpha -=2;
-            y1 += 5;
-            y2+=5;x2+=5;
-            y3+=5;x3-=5;
-            y4-=5;
-            y5-=5;x5-=5;
-            y6-=5;x6+=5;
+            size -= 1;
+            y1 += (int)random(1f, 10f);
+            y2 += (int)random(1f, 10f); x2 += (int)random(1f, 10f);
+            y3 += (int)random(1f, 10f); x3 -= (int)random(1f, 10f);
+            y4 -= (int)random(1f, 10f);
+            y5 -= (int)random(1f, 10f); x5 -= (int)random(1f, 10f);
+            y6 -= (int)random(1f, 10f); x6 += (int)random(1f, 10f);
+            y11 += (int)random(1f, 10f); x11 += (int)random(1f, 10f);
+            y21 += (int)random(1f, 10f); x21 += (int)random(1f, 10f);
+            y31 += (int)random(1f, 10f); x31 -= (int)random(1f, 10f);
+            y41 -= (int)random(1f, 10f); x41 -= (int)random(1f, 10f);
+            y51 -= (int)random(1f, 10f); x51 -= (int)random(1f, 10f);
+            y61 -= (int)random(1f, 10f); x61 += (int)random(1f, 10f);
         }
 
         public void display()
         {
             fill(red, green, blue, this.alpha);
-            println(this.alpha);
-            ellipse(x1,y1,20,20);
-            ellipse(x2,y2,20,20);
-            ellipse(x3,y3,20,20);
-            ellipse(x4,y4,20,20);
-            ellipse(x5,y5,20,20);
-            ellipse(x6,y6,20,20);
+            stroke(red, green, blue, this.alpha);
+            ellipse(x1,y1,size,size);
+            ellipse(x2,y2,size,size);
+            ellipse(x3,y3,size,size);
+            ellipse(x4,y4,size,size);
+            ellipse(x5,y5,size,size);
+            ellipse(x6,y6,size,size);
+            ellipse(x11,y11,size,size);
+            ellipse(x21,y21,size,size);
+            ellipse(x31,y31,size,size);
+            ellipse(x41,y41,size,size);
+            ellipse(x51,y51,size,size);
+            ellipse(x61,y61,size,size);
         }
 
         @Override

@@ -112,7 +112,7 @@ class FullscreenActivity : AppCompatActivity()
 	{
 		val intent = Intent(this, WatchMoodle::class.java)
 		intent.putExtra("file", Uri.fromFile(moodles[position].file))
-		intent.putExtra("render", true)
+		intent.putExtra("render", false)
 		startActivity(intent)
 	}
 
