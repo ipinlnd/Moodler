@@ -20,7 +20,7 @@ class WatchMoodle : AppCompatActivity()
 {
 	private var sketch : PApplet? = null
 	private var context : Context? = null
-	private var loaded = false;
+	private var loaded = false
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{

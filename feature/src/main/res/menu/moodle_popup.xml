@@ -18,5 +18,9 @@
         android:id="@+id/popup_menu_share"
         android:title="@string/share"
         />
+    <item
+        android:id="@+id/popup_menu_continue"
+        android:title="@string/cont"
+        />
 
 </menu>

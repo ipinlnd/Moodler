@@ -1,5 +1,7 @@
 package com.nlnd.moodler.feature;
 
+import processing.core.PGraphics;
+
 interface MoodleObject
 {
     int posX = 0, posY = 0;
@@ -8,8 +10,9 @@ interface MoodleObject
     int fadeSpeed = 0;
     float size = 0, originalSize = 0;
     int time = 0;
+    String name = null;
 
     void reset();
     void update();
-    void display();
+    void display(PGraphics p);
 }

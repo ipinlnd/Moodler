@@ -4,12 +4,12 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#ffffff"
     android:gravity="center">
     <ImageView
         android:id="@+id/image_id"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:backgroundTint="@drawable/method_highlight"
         android:adjustViewBounds="true" />
     <TextView
         android:id="@+id/text_id"

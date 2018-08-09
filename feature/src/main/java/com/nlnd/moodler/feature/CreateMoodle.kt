@@ -1,5 +1,6 @@
 package com.nlnd.moodler.feature
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -18,15 +19,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.PopupWindow
-import java.io.IOException
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import java.io.*
 
 class CreateMoodle : AppCompatActivity()
 {
 	private var sketch : PApplet? = null
 	private var context : Context? = null
+	private var loaded = false
+
 	private fun makeList()
 	{
 		buttons = ArrayList()
@@ -39,6 +42,7 @@ class CreateMoodle : AppCompatActivity()
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
+		var ownFile : Uri? = null
 		val frame = FrameLayout(this)
 		context = this
 		makeList()
@@ -46,12 +50,23 @@ class CreateMoodle : AppCompatActivity()
 		setContentView(frame, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT))
 		if (savedInstanceState == null)
+		{
 			file = intent.extras.getParcelable("file")
+			continueMoodle = intent.extras.getBoolean("continue");
+		}
 
 		if (file == null)
 			return
 
-		musicFile = file
+		if (continueMoodle)
+		{
+			ownFile = file
+			loadFile(File(ownFile!!.path))
+			while(!loaded)
+				continue
+		}
+		else
+			musicFile = file
 		mplayer = MediaPlayer()
 		mplayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
 
@@ -110,6 +125,43 @@ class CreateMoodle : AppCompatActivity()
 		}
 	}
 
+	fun loadFile(f : File)
+	{
+		val ar = ArrayList<String>()
+		val dis = DataInputStream(FileInputStream(f))
+		val dos: DataOutputStream
+		var newSong = (filesDir.toString() + "/tempSong.mp3")
+		var line = ""
+
+		var progressDialog = ProgressDialog(this,
+				ProgressDialog.STYLE_SPINNER);
+		progressDialog.setIndeterminate(false);
+		progressDialog.setMessage("Loading...");
+		progressDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT,
+				FrameLayout.LayoutParams.WRAP_CONTENT);
+		progressDialog.setCancelable(true);
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.show();
+
+		while (true)
+		{
+			line = dis.readLine()
+			ar.add(line)
+			if (line == "end")
+				break
+		}
+		config = ar.toTypedArray();
+
+		val b = ByteArray(dis.available())
+		dos = DataOutputStream(FileOutputStream(newSong));
+		dis.read(b)
+		dos.write(b)
+
+		musicFile = Uri.fromFile(File(newSong))
+		progressDialog.dismiss();
+		loaded = true
+	}
+
 	companion object
 	{
 		var musicFile: Uri? = null
@@ -120,6 +172,8 @@ class CreateMoodle : AppCompatActivity()
 		var pw : PopupWindow? = null
 		var inflater: LayoutInflater? = null
 		var layout : View? = null
+		var continueMoodle : Boolean = false
+		var config: Array<String>? = null
 
 		fun stopMusic()
 		{

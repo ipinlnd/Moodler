@@ -79,8 +79,17 @@ class FullscreenActivity : AppCompatActivity()
 			R.id.popup_menu_delete -> deleteMoodle(position)
 			R.id.popup_menu_render -> renderMoodle(position)
 			R.id.popup_menu_share -> shareMoodle(position)
+			R.id.popup_menu_continue -> continueMoodle(position)
 		}
 		return true;
+	}
+
+	private fun continueMoodle(position: Int)
+	{
+		val intent = Intent(this, CreateMoodle::class.java)
+		intent.putExtra("file", Uri.fromFile(moodles[position].file))
+		intent.putExtra("continue", true);
+		startActivity(intent)
 	}
 
 	private fun shareMoodle(position: Int)
@@ -133,6 +142,7 @@ class FullscreenActivity : AppCompatActivity()
 			fileName = getFileName(mFile)
 			val intent = Intent(this, CreateMoodle::class.java)
 			intent.putExtra("file", mFile)
+			intent.putExtra("continue", false);
 			startActivity(intent)
 		}
 	}

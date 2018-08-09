@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PImage;
 
 public class WatchMoodleSketch extends PApplet
@@ -33,7 +34,7 @@ public class WatchMoodleSketch extends PApplet
     private MoodleSlider slider;
 
     private boolean render = false;
-
+    private PGraphics pGraphics;
     private boolean loaded = false;
 
     @Override
@@ -61,6 +62,8 @@ public class WatchMoodleSketch extends PApplet
         stopButton = new MoodleButton(30+ 95 - 10, height - 100, 95, 95, loadImage("stop_button.png"));
         slider = new MoodleSlider(220, height - 50, width - 240, 50,0, WatchMoodle.Companion.getMplayer().getDuration());
         loaded = false;
+
+        pGraphics = g;
 
         render = WatchMoodle.Companion.getRender();
 
@@ -128,7 +131,7 @@ public class WatchMoodleSketch extends PApplet
             for (int j = 0; j <objects.get(i).size(); j++)
             {
                 objects.get(i).get(j).update();
-                objects.get(i).get(j).display();
+                objects.get(i).get(j).display(pGraphics);
             }
         }
         textSize(100);
@@ -305,241 +308,6 @@ public class WatchMoodleSketch extends PApplet
         public int getPos()
         {
             return (current * max) / this.width;
-        }
-    }
-
-    class Sticks implements Comparable<Sticks>,MoodleObject
-    {
-        int posX, posY;
-        int red, green, blue;
-        int alpha;
-        int fadeSpeed;
-        float size, originalSize;
-        int time;
-
-        Sticks(int posX, int posY, int fadeSpeed, float originalSize, int time) {
-            this.posX = posX;
-            this.posY = posY;
-            this.fadeSpeed = fadeSpeed;
-            this.originalSize = originalSize;
-            this.time = time;
-            this.red = posX % 255;
-            this.blue = posY % 255;
-            this.green = (posX * posY) % 255;
-            this.size = originalSize;
-            this.alpha = 255;
-        }
-
-        public void reset()
-        {
-            alpha = 255;
-            size = originalSize;
-        }
-
-        public void update()
-        {
-            alpha -= fadeSpeed;
-            if(size >= 1)
-                size -= .4;
-        }
-
-        public void display()
-        {
-            stroke(this.red, this.green, this.blue, this.alpha);
-            strokeWeight(this.size);
-            line(posX, posY, posX, height - posY);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.time;
-
-        }
-
-        @Override
-        public int compareTo(Sticks o) {
-            return (this.time - o.time) ;
-        }
-    }
-
-    class Snow implements Comparable<Snow>, MoodleObject{
-        int posX, posY;
-        int red, green, blue;
-        int alpha;
-        int fadeSpeed;
-        float size, originalSize;
-        int time;
-
-        Snow(int posX, int posY, int fadeSpeed, float originalSize, int time) {
-            this.posX = posX;
-            this.posY = posY;
-            this.fadeSpeed = fadeSpeed;
-            this.originalSize = originalSize;
-            this.time = time;
-            this.red = posX % 255;
-            this.blue = posY % 255;
-            this.green = (posX * posY) % 255;
-            this.size = originalSize;
-            this.alpha = 255;
-        }
-
-        public void reset()
-        {
-            alpha = 255;
-            size = originalSize;
-        }
-
-        public void update()
-        {
-            alpha -= fadeSpeed;
-            if(size >= 1)
-                size -= .4;
-        }
-
-        public void display()
-        {
-            stroke(this.red, this.green, this.blue, this.alpha);
-            strokeWeight(this.size);
-            line(posX, posY, width - posX, height - posY);
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return this.time;
-        }
-
-        @Override
-        public int compareTo(Snow o) {
-            return (this.time - o.time) ;
-        }
-
-    }
-
-    class Ring implements Comparable<Ring>, MoodleObject {
-        int posX, posY;
-        int red, green, blue;
-        int alpha;
-        int fadeSpeed;
-        float size, originalSize;
-        int time;
-
-        Ring(int posX, int posY, int fadeSpeed, float originalSize, int time) {
-            this.posX = posX;
-            this.posY = posY;
-            this.fadeSpeed = fadeSpeed;
-            this.originalSize = originalSize;
-            this.time = time;
-            this.red = posX % 255;
-            this.blue = posY % 255;
-            this.green = (posX * posY) % 255;
-            this.size = originalSize;
-            this.alpha = 255;
-        }
-
-        public void reset()
-        {
-            alpha = 255;
-            size = originalSize;
-        }
-
-        public void update()
-        {
-            size += 10;
-            alpha -= 1;
-        }
-
-        public void display()
-        {
-            stroke(red, blue, green, alpha);
-            strokeWeight(1);
-            fill(0,0);
-            ellipse(posX, posY, size, size);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.time;
-
-        }
-
-        @Override
-        public int compareTo(Ring o) {
-            return (this.time - o.time) ;
-        }
-    }
-
-    class FireWorks implements Comparable<FireWorks>, MoodleObject
-    {
-        int x,y,t;
-        int red, green, blue;
-        int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6;
-        int x11,y11,x21,y21,x31,y31,x41,y41,x51,y51,x61,y61;
-        int alpha;
-        int originalSize, size;
-
-        FireWorks(int x, int y, int t)
-        {
-            this.x = x;
-            this.y = y;
-            this.t = t;
-            x1 = x2 = x3 = x4 = x5 = x6 = x;
-            x11 = x21 = x31 = x41 = x51 = x61 = x;
-            y1 = y2 = y3 = y4 = y5 = y6 = y;
-            y11 = y21 = y31 = y41 = y51 = y61 = y;
-            alpha = 255;
-            this.red = x % 255;
-            this.blue = y % 255;
-            this.green = (x * y) % 255;
-            originalSize = size;
-            this.size = originalSize;
-        }
-
-        public void update()
-        {
-            this.alpha -=2;
-            size -= 1;
-            y1 += (int)random(1f, 10f);
-            y2 += (int)random(1f, 10f); x2 += (int)random(1f, 10f);
-            y3 += (int)random(1f, 10f); x3 -= (int)random(1f, 10f);
-            y4 -= (int)random(1f, 10f);
-            y5 -= (int)random(1f, 10f); x5 -= (int)random(1f, 10f);
-            y6 -= (int)random(1f, 10f); x6 += (int)random(1f, 10f);
-            y11 += (int)random(1f, 10f); x11 += (int)random(1f, 10f);
-            y21 += (int)random(1f, 10f); x21 += (int)random(1f, 10f);
-            y31 += (int)random(1f, 10f); x31 -= (int)random(1f, 10f);
-            y41 -= (int)random(1f, 10f); x41 -= (int)random(1f, 10f);
-            y51 -= (int)random(1f, 10f); x51 -= (int)random(1f, 10f);
-            y61 -= (int)random(1f, 10f); x61 += (int)random(1f, 10f);
-        }
-
-        public void display()
-        {
-            fill(red, green, blue, this.alpha);
-            stroke(red, green, blue, this.alpha);
-            ellipse(x1,y1,size,size);
-            ellipse(x2,y2,size,size);
-            ellipse(x3,y3,size,size);
-            ellipse(x4,y4,size,size);
-            ellipse(x5,y5,size,size);
-            ellipse(x6,y6,size,size);
-            ellipse(x11,y11,size,size);
-            ellipse(x21,y21,size,size);
-            ellipse(x31,y31,size,size);
-            ellipse(x41,y41,size,size);
-            ellipse(x51,y51,size,size);
-            ellipse(x61,y61,size,size);
-        }
-
-        @Override
-        public int compareTo(@NonNull FireWorks fireWorks)
-        {
-            return (this.t - fireWorks.t) ;
-        }
-
-        public void reset()
-        {
-            alpha = 255;
         }
     }
 }

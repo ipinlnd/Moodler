@@ -2,6 +2,7 @@ package com.nlnd.moodler.feature;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
 {
     private Activity context;
     private List<MoodleMethod> methods;
+    private int selected = 0;
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
@@ -27,6 +29,10 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
     public void onBindViewHolder(final CategoryViewHolder holder, final int position)
     {
         holder.text.setText(methods.get(position).getName());
+        if (selected == position)
+            holder.text.setTextColor(Color.RED);
+        else
+            holder.text.setTextColor(Color.BLACK);
         holder.image.setImageResource(methods.get(position).getId());
         holder.image.setAdjustViewBounds(true);
         holder.image.setOnClickListener(new View.OnClickListener()
@@ -42,6 +48,8 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
                     CreateMoodleSketch.method = CreateMoodleSketch.Method.sticks;
                 if (methods.get(position).getName().equals("Ring"))
                     CreateMoodleSketch.method = CreateMoodleSketch.Method.rings;
+                selected = position;
+                notifyDataSetChanged();
             }
         });
     }
