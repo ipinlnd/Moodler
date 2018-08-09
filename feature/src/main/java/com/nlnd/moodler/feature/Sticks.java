@@ -3,17 +3,10 @@ package com.nlnd.moodler.feature;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
-public class Sticks extends PApplet implements Comparable<Sticks>,MoodleObject
+public class Sticks extends MoodleObject implements Comparable<Sticks>
 {
-    int posX, posY;
-    int red, green, blue;
-    int alpha;
-    int fadeSpeed;
-    float size, originalSize;
-    int time;
-    String name;
-
-    Sticks(int posX, int posY, int fadeSpeed, float originalSize, int time) {
+    Sticks(int posX, int posY, int fadeSpeed, float originalSize, int time)
+    {
         this.posX = posX;
         this.posY = posY;
         this.fadeSpeed = fadeSpeed;

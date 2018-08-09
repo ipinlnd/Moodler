@@ -73,6 +73,8 @@ public class CreateMoodleSketch extends PApplet
 
         if (CreateMoodle.Companion.getContinueMoodle())
             loadMoodle();
+        else
+            loaded = true;
 
         paused = true;
         touchLock = false;

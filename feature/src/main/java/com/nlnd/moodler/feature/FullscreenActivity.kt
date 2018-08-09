@@ -71,6 +71,12 @@ class FullscreenActivity : AppCompatActivity()
 		})
 	}
 
+	override fun onResume()
+	{
+		super.onResume()
+		setView()
+	}
+
 	fun onMenuItemClick(menu : MenuItem, position : Int): Boolean
 	{
 		when(menu.itemId)

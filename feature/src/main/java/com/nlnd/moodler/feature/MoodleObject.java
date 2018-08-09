@@ -2,17 +2,17 @@ package com.nlnd.moodler.feature;
 
 import processing.core.PGraphics;
 
-interface MoodleObject
+public abstract class MoodleObject
 {
-    int posX = 0, posY = 0;
-    int red = 0, green = 0, blue = 0;
-    int alpha = 0;
-    int fadeSpeed = 0;
-    float size = 0, originalSize = 0;
-    int time = 0;
-    String name = null;
+    public int posX, posY;
+    public int red, green, blue;
+    public int alpha;
+    public int fadeSpeed;
+    public float size, originalSize;
+    public int time;
+    public String name;
 
-    void reset();
-    void update();
-    void display(PGraphics p);
+    public abstract void reset();
+    public abstract void update();
+    public abstract void display(PGraphics p);
 }

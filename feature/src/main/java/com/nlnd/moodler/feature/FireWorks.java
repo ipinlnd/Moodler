@@ -2,19 +2,15 @@ package com.nlnd.moodler.feature;
 
 import android.support.annotation.NonNull;
 
+import java.util.Random;
+
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
-class FireWorks extends PApplet implements Comparable<FireWorks>, MoodleObject
+class FireWorks extends MoodleObject implements Comparable<FireWorks>
 {
-    int posX = 0, posY = 0;
-    int time = 0;
-    int red, green, blue;
     int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6;
     int x11,y11,x21,y21,x31,y31,x41,y41,x51,y51,x61,y61;
-    int alpha;
-    int originalSize, size;
-    String name;
 
     FireWorks(int x, int y, int t)
     {
@@ -38,18 +34,18 @@ class FireWorks extends PApplet implements Comparable<FireWorks>, MoodleObject
     {
         this.alpha -=2;
         size -= 1;
-        y1 += (int)random(1f, 10f);
-        y2 += (int)random(1f, 10f); x2 += (int)random(1f, 10f);
-        y3 += (int)random(1f, 10f); x3 -= (int)random(1f, 10f);
-        y4 -= (int)random(1f, 10f);
-        y5 -= (int)random(1f, 10f); x5 -= (int)random(1f, 10f);
-        y6 -= (int)random(1f, 10f); x6 += (int)random(1f, 10f);
-        y11 += (int)random(1f, 10f); x11 += (int)random(1f, 10f);
-        y21 += (int)random(1f, 10f); x21 += (int)random(1f, 10f);
-        y31 += (int)random(1f, 10f); x31 -= (int)random(1f, 10f);
-        y41 -= (int)random(1f, 10f); x41 -= (int)random(1f, 10f);
-        y51 -= (int)random(1f, 10f); x51 -= (int)random(1f, 10f);
-        y61 -= (int)random(1f, 10f); x61 += (int)random(1f, 10f);
+        y1 += (int)new Random().nextInt(10);
+        y2 += (int)new Random().nextInt(10); x2 += (int)new Random().nextInt(10);
+        y3 += (int)new Random().nextInt(10); x3 -= (int)new Random().nextInt(10);
+        y4 -= (int)new Random().nextInt(10);
+        y5 -= (int)new Random().nextInt(10); x5 -= (int)new Random().nextInt(10);
+        y6 -= (int)new Random().nextInt(10); x6 += (int)new Random().nextInt(10);
+        y11 += (int)new Random().nextInt(10); x11 += (int)new Random().nextInt(10);
+        y21 += (int)new Random().nextInt(10); x21 += (int)new Random().nextInt(10);
+        y31 += (int)new Random().nextInt(10); x31 -= (int)new Random().nextInt(10);
+        y41 -= (int)new Random().nextInt(10); x41 -= (int)new Random().nextInt(10);
+        y51 -= (int)new Random().nextInt(10); x51 -= (int)new Random().nextInt(10);
+        y61 -= (int)new Random().nextInt(10); x61 += (int)new Random().nextInt(10);
     }
 
     public void display(PGraphics g)

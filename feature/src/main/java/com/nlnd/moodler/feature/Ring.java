@@ -3,17 +3,10 @@ package com.nlnd.moodler.feature;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
-public class Ring extends PApplet implements Comparable<Ring>, MoodleObject
+public class Ring extends MoodleObject implements Comparable<Ring>
 {
-    int posX, posY;
-    int red, green, blue;
-    int alpha;
-    int fadeSpeed;
-    float size, originalSize;
-    int time;
-    String name;
-
-    Ring(int posX, int posY, int fadeSpeed, float originalSize, int time) {
+    Ring(int posX, int posY, int fadeSpeed, float originalSize, int time)
+    {
         this.posX = posX;
         this.posY = posY;
         this.fadeSpeed = fadeSpeed;
@@ -24,7 +17,7 @@ public class Ring extends PApplet implements Comparable<Ring>, MoodleObject
         this.green = (posX * posY) % 255;
         this.size = originalSize;
         this.alpha = 255;
-        name = "ring";
+        this.name = "ring";
     }
 
     public void reset()
@@ -50,7 +43,6 @@ public class Ring extends PApplet implements Comparable<Ring>, MoodleObject
     @Override
     public int hashCode() {
         return this.time;
-
     }
 
     @Override

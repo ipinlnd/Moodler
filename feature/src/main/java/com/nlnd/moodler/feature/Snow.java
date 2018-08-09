@@ -3,17 +3,10 @@ package com.nlnd.moodler.feature;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
-public class Snow extends PApplet implements Comparable<Snow>, MoodleObject
+public class Snow extends MoodleObject implements Comparable<Snow>
 {
-    int posX, posY;
-    int red, green, blue;
-    int alpha;
-    int fadeSpeed;
-    float size, originalSize;
-    int time;
-    String name;
-
-    Snow(int posX, int posY, int fadeSpeed, float originalSize, int time) {
+    Snow(int posX, int posY, int fadeSpeed, float originalSize, int time)
+    {
         this.posX = posX;
         this.posY = posY;
         this.fadeSpeed = fadeSpeed;
