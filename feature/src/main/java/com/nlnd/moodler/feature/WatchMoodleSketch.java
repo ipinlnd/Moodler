@@ -1,31 +1,17 @@
 package com.nlnd.moodler.feature;
 
-import android.support.annotation.NonNull;
-import android.widget.Toast;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PImage;
 
 public class WatchMoodleSketch extends PApplet
 {
     private int frame = 0;
     private Map<Integer, List<MoodleObject>> objects;
-
-    float multX, multY;
-    float theirX, theirY;
 
     private boolean paused;
     private boolean touchLock = false;
@@ -82,6 +68,12 @@ public class WatchMoodleSketch extends PApplet
     }
 
     @Override
+    public void onStop()
+    {
+        super.onStop();
+    }
+
+    @Override
     public void draw()
     {
         background(0);
@@ -95,14 +87,13 @@ public class WatchMoodleSketch extends PApplet
         {
             frame = WatchMoodle.Companion.getCurrentPosition();
             slider.setPos(WatchMoodle.Companion.getCurrentPosition());
-            slider.update();
+            slider.update(this, objects);
         }
 
         if(frame == WatchMoodle.Companion.getDuration())
         {
             paused = true;
             WatchMoodle.Companion.pauseMusic();
-            List<File> images = Arrays.asList(new File(getActivity().getFilesDir() + "/render").listFiles());
         }
 
         if(mousePressed && !touchLock)
@@ -130,38 +121,36 @@ public class WatchMoodleSketch extends PApplet
                 continue;
             for (int j = 0; j <objects.get(i).size(); j++)
             {
-                objects.get(i).get(j).update();
+                if (i == frame)
+                    objects.get(i).get(j).reset();
+                if (!paused)
+                    objects.get(i).get(j).update();
                 objects.get(i).get(j).display(pGraphics);
             }
         }
-        textSize(100);
-        stroke(255);
-        fill(255);
-        text(frameRate, 10, 100);
-
-        if (render)
-            saveFrame(getActivity().getFilesDir()+"/render"+"/"+"######.png");
     }
 
-    public void drawUI()
+    private void drawUI()
     {
         if(paused)
         {
-            playButton.show();
-            frame = (int) slider.getPos();
+            playButton.show(this);
+            frame = slider.getPos();
             WatchMoodle.Companion.getMplayer().seekTo((int) slider.getPos());
-            slider.update();
-            slider.display();
+            slider.update(this, objects);
+            slider.display(this);
         }
         else
         {
-            pauseButton.show();
+            pauseButton.show(this);
         }
-        stopButton.show();
+        stopButton.show(this);
     }
 
-    public void loadMoodle()
+    private void loadMoodle()
     {
+        float multX, multY;
+        float theirX, theirY;
         String[] config = WatchMoodle.Companion.getConfig();
         theirX = Float.parseFloat(config[1].split(" ")[0]);
         theirY = Float.parseFloat(config[1].split(" ")[1]);
@@ -170,48 +159,53 @@ public class WatchMoodleSketch extends PApplet
         multY = height / theirY;
         for(int i=1;i<config.length;i++)
         {
-            if(config[i].split(" ")[0].equals("stick"))
+            switch (config[i].split(" ")[0])
             {
-                Sticks s = new Sticks((int)(parseInt(config[i].split(" ")[1]) * multX),
-                            (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                case "stick":
+                {
+                    Sticks s = new Sticks((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
                             parseInt(config[i].split(" ")[3]));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
-            }
-            else if(config[i].split(" ")[0].equals("snow"))
-            {
-                Snow s = (new Snow((int)(parseInt(config[i].split(" ")[1]) * multX),
-                            (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
+                case "snow":
+                {
+                    Snow s = (new Snow((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
                             parseInt(config[i].split(" ")[3])));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
-            }
-            else if(config[i].split(" ")[0].equals("ring"))
-            {
-                Ring s = (new Ring((int)(parseInt(config[i].split(" ")[1]) * multX),
-                            (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 5,
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
+                case "ring":
+                {
+                    Ring s = (new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
+                            parseInt(config[i].split(" ")[3]),parseInt(config[i].split(" ")[4])));
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
+                case "fireworks":
+                {
+                    FireWorks s = (new FireWorks((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY),
                             parseInt(config[i].split(" ")[3])));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
             }
-            else if(config[i].split(" ")[0].equals("fireworks"))
-            {
-                FireWorks s = (new FireWorks((int)(parseInt(config[i].split(" ")[1]) * multX),
-                                (int)(parseInt(config[i].split(" ")[2]) * multY),
-                                parseInt(config[i].split(" ")[3])));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
-            }
-            else
-                continue;
         }
         loaded = true;
     }
@@ -221,93 +215,4 @@ public class WatchMoodleSketch extends PApplet
         touchLock = false;
     }
 
-    class MoodleButton {
-        int x, y;
-        int width, height;
-        PImage buttonImage;
-        MoodleButton(int x, int y, int w, int h, PImage image)
-        {
-            this.x = x;
-            this.y = y;
-            this.buttonImage = image;
-            this.width = w;
-            this.height = h;
-        }
-
-        boolean isClicked(int x, int y)
-        {
-            if(x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + height)
-                return true;
-            else
-                return false;
-        }
-
-        void show()
-        {
-            image(this.buttonImage, x, y, this.width, this.height);
-        }
-    }
-
-    class MoodleSlider {
-        int x, y;
-        int width;
-        int height;
-        int min, max;
-        int current;
-        int col = 50;
-        boolean lock = false;
-        MoodleSlider(int x, int y, int w, int h, int min, int max)
-        {
-            this.x = x;
-            this.y = y;
-            this.width = w;
-            this.height = h;
-            this.min = min;
-            this.max = max;
-            current = min;
-        }
-
-        void setPos(int pos)
-        {
-            int temp = (this.width * pos) / max;
-            if(temp < this.width -10)
-                current = temp;
-        }
-
-        void update()
-        {
-            if(mousePressed)
-            {
-                if(mouseX > x && mouseX < x + this.width && mouseY > y && mouseY < y+ this.height)
-                    lock = true;
-            }
-            else
-            {
-                col = 50;
-                lock = false;
-            }
-
-            if(lock)
-            {
-                col = 100;
-                if((mouseX) >= x && (mouseX) <= x + width)
-                    current = (mouseX - x);
-            }
-        }
-        void display()
-        {
-            fill(255);
-            rectMode(CORNER);
-            rect(x, y, this.width, this.height);
-            fill(col);
-            rectMode(CENTER);
-            rect(x+current, y+this.height/2, 20, this.height);
-
-        }
-
-        public int getPos()
-        {
-            return (current * max) / this.width;
-        }
-    }
 }

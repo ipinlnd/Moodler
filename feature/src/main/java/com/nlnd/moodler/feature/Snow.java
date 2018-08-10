@@ -1,11 +1,10 @@
 package com.nlnd.moodler.feature;
 
-import processing.core.PApplet;
 import processing.core.PGraphics;
 
 public class Snow extends MoodleObject implements Comparable<Snow>
 {
-    Snow(int posX, int posY, int fadeSpeed, float originalSize, int time)
+    Snow(int posX, int posY, int fadeSpeed, int originalSize, int time)
     {
         this.posX = posX;
         this.posY = posY;

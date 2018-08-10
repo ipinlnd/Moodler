@@ -8,8 +8,9 @@ public abstract class MoodleObject
     public int red, green, blue;
     public int alpha;
     public int fadeSpeed;
-    public float size, originalSize;
+    public int size, originalSize;
     public int time;
+    public float pressure;
     public String name;
 
     public abstract void reset();

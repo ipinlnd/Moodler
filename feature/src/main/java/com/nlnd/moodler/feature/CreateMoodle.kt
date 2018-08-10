@@ -1,27 +1,23 @@
 package com.nlnd.moodler.feature
 
-import android.app.ProgressDialog
 import android.content.Context
-import android.net.Uri
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import processing.android.CompatUtils
-import processing.core.PApplet
-import processing.android.PFragment
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
-import android.widget.PopupWindow
-import android.support.v7.widget.RecyclerView
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.*
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.PopupWindow
+import processing.android.CompatUtils
+import processing.android.PFragment
+import processing.core.PApplet
 import java.io.*
 
 class CreateMoodle : AppCompatActivity()
@@ -42,7 +38,12 @@ class CreateMoodle : AppCompatActivity()
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-		var ownFile : Uri? = null
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE)
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+		var ownFile : Uri?
 		val frame = FrameLayout(this)
 		context = this
 		makeList()
@@ -52,7 +53,7 @@ class CreateMoodle : AppCompatActivity()
 		if (savedInstanceState == null)
 		{
 			file = intent.extras.getParcelable("file")
-			continueMoodle = intent.extras.getBoolean("continue");
+			continueMoodle = intent.extras.getBoolean("continue")
 		}
 
 		if (file == null)
@@ -86,7 +87,7 @@ class CreateMoodle : AppCompatActivity()
 		val density = context!!.getResources().getDisplayMetrics()
 		pw = PopupWindow(layout, (density.widthPixels * .8).toInt(), (density.heightPixels * 0.5).toInt(), true)
 		(layout!!.findViewById(R.id.toolbox_close_button) as Button).setOnClickListener { pw!!.dismiss() }
-		pw!!.isOutsideTouchable = false;
+		pw!!.isOutsideTouchable = false
 
 		val rv = layout!!.findViewById<RecyclerView>(R.id.toolbox_recycler_view)
 		val layoutManager = LinearLayoutManager(context,
@@ -98,9 +99,9 @@ class CreateMoodle : AppCompatActivity()
 		val adapter = ToolsRecyclerAdaptor(buttons, context)
 		rv.adapter = adapter
 
-		val saveButton : Button = layout!!.findViewById(R.id.toolbox_save_button);
+		val saveButton : Button = layout!!.findViewById(R.id.toolbox_save_button)
 		saveButton.setOnClickListener( {
-			CreateMoodleSketch.saving = true;
+			CreateMoodleSketch.saving = true
 		})
 
 		sketch = CreateMoodleSketch()
@@ -130,18 +131,8 @@ class CreateMoodle : AppCompatActivity()
 		val ar = ArrayList<String>()
 		val dis = DataInputStream(FileInputStream(f))
 		val dos: DataOutputStream
-		var newSong = (filesDir.toString() + "/tempSong.mp3")
+		val newSong = (filesDir.toString() + "/tempSong.mp3")
 		var line = ""
-
-		var progressDialog = ProgressDialog(this,
-				ProgressDialog.STYLE_SPINNER);
-		progressDialog.setIndeterminate(false);
-		progressDialog.setMessage("Loading...");
-		progressDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT,
-				FrameLayout.LayoutParams.WRAP_CONTENT);
-		progressDialog.setCancelable(true);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.show();
 
 		while (true)
 		{
@@ -150,15 +141,14 @@ class CreateMoodle : AppCompatActivity()
 			if (line == "end")
 				break
 		}
-		config = ar.toTypedArray();
+		config = ar.toTypedArray()
 
 		val b = ByteArray(dis.available())
-		dos = DataOutputStream(FileOutputStream(newSong));
+		dos = DataOutputStream(FileOutputStream(newSong))
 		dis.read(b)
 		dos.write(b)
 
 		musicFile = Uri.fromFile(File(newSong))
-		progressDialog.dismiss();
 		loaded = true
 	}
 

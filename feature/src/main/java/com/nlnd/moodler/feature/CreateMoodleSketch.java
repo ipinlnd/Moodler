@@ -1,20 +1,20 @@
 package com.nlnd.moodler.feature;
 
 import android.widget.Toast;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PImage;
+import processing.event.TouchEvent;
 
 public class CreateMoodleSketch extends PApplet
 {
@@ -36,10 +36,6 @@ public class CreateMoodleSketch extends PApplet
     }
 
     private Map<Integer, List<MoodleObject>> objects;
-
-    float multX, multY;
-    float theirX, theirY;
-
 
     public static Method method;
     private MoodleButton pauseButton, playButton, stopButton;
@@ -86,7 +82,7 @@ public class CreateMoodleSketch extends PApplet
     {
         background(0);
 
-        while (!loaded)
+        if (!loaded)
             return;
 
         drawUI();
@@ -95,7 +91,7 @@ public class CreateMoodleSketch extends PApplet
         {
             frame = CreateMoodle.Companion.getCurrentPosition();
             slider.setPos(CreateMoodle.Companion.getCurrentPosition());
-            slider.update();
+            slider.update(this, objects);
         }
 
         if(frame == CreateMoodle.Companion.getDuration())
@@ -125,32 +121,30 @@ public class CreateMoodleSketch extends PApplet
             }
             else if(touches.length > 0 && !paused)
             {
-                for(int i=0;i<touches.length; i++)
+                for (TouchEvent.Pointer touche : touches)
                 {
-                    if(method == Method.sticks)
+                    if (method == Method.sticks)
                     {
-                        Sticks s = new Sticks((int) touches[i].x, (int) touches[i].y,  5, 10, frame);
+                        Sticks s = new Sticks((int) touche.x, (int) touche.y, 5, 10, frame);
                         if (!objects.containsKey(frame))
                             objects.put(frame, new ArrayList<MoodleObject>());
                         objects.get(frame).add(s);
-                    }
-                    else if(method == Method.snow)
+                    } else if (method == Method.snow)
                     {
-                        Snow s = new Snow((int) touches[i].x, (int) touches[i].y,  5, 10, frame);
+                        Snow s = new Snow((int) touche.x, (int) touche.y, 5, 10, frame);
                         if (!objects.containsKey(frame))
                             objects.put(frame, new ArrayList<MoodleObject>());
                         objects.get(frame).add(s);
-                    }
-                    else if(method == Method.rings)
+                    } else if (method == Method.rings)
                     {
-                        Ring s = new Ring((int) touches[i].x, (int) touches[i].y,  5, 10, frame);
+                        println(touche.pressure);
+                        Ring s = new Ring((int) touche.x, (int) touche.y, 5, 20, frame, touche.pressure);
                         if (!objects.containsKey(frame))
                             objects.put(frame, new ArrayList<MoodleObject>());
                         objects.get(frame).add(s);
-                    }
-                    else if(method == Method.firework)
+                    } else if (method == Method.firework)
                     {
-                        FireWorks s = new FireWorks((int) touches[i].x, (int) touches[i].y, frame);
+                        FireWorks s = new FireWorks((int) touche.x, (int) touche.y, frame);
                         if (!objects.containsKey(frame))
                             objects.put(frame, new ArrayList<MoodleObject>());
                         objects.get(frame).add(s);
@@ -164,77 +158,86 @@ public class CreateMoodleSketch extends PApplet
                 continue;
             for (int j = 0; j <objects.get(i).size(); j++)
             {
-                objects.get(i).get(j).update();
+                if(!paused)
+                    objects.get(i).get(j).update();
                 objects.get(i).get(j).display(graphics);
             }
         }
     }
 
-    public void loadMoodle()
+    private void loadMoodle()
     {
+        float multX, multY;
+        float theirX, theirY;
         String[] config = CreateMoodle.Companion.getConfig();
+
         theirX = Float.parseFloat(config[1].split(" ")[0]);
         theirY = Float.parseFloat(config[1].split(" ")[1]);
-
         multX = width / theirX;
         multY = height / theirY;
+
         for(int i=1;i<config.length;i++)
         {
-            if(config[i].split(" ")[0].equals("stick"))
+            switch (config[i].split(" ")[0])
             {
-                Sticks s = new Sticks((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                        parseInt(config[i].split(" ")[3]));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
+                case "stick":
+                {
+                    Sticks s = new Sticks((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                            parseInt(config[i].split(" ")[3]));
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
+                case "snow":
+                {
+                    Snow s = (new Snow((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                            parseInt(config[i].split(" ")[3])));
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
+                case "ring":
+                {
+                    Ring s = (new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
+                            parseInt(config[i].split(" ")[3]),parseInt(config[i].split(" ")[4]) ));
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
+                case "fireworks":
+                {
+                    FireWorks s = (new FireWorks((int) (parseInt(config[i].split(" ")[1]) * multX),
+                            (int) (parseInt(config[i].split(" ")[2]) * multY),
+                            parseInt(config[i].split(" ")[3])));
+                    int f = parseInt(config[i].split(" ")[3]);
+                    if (!objects.containsKey(f))
+                        objects.put(f, new ArrayList<MoodleObject>());
+                    objects.get(f).add(s);
+                    break;
+                }
             }
-            else if(config[i].split(" ")[0].equals("snow"))
-            {
-                Snow s = (new Snow((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                        parseInt(config[i].split(" ")[3])));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
-            }
-            else if(config[i].split(" ")[0].equals("ring"))
-            {
-                Ring s = (new Ring((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY), 5, 5,
-                        parseInt(config[i].split(" ")[3])));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
-            }
-            else if(config[i].split(" ")[0].equals("fireworks"))
-            {
-                FireWorks s = (new FireWorks((int)(parseInt(config[i].split(" ")[1]) * multX),
-                        (int)(parseInt(config[i].split(" ")[2]) * multY),
-                        parseInt(config[i].split(" ")[3])));
-                int f = parseInt(config[i].split(" ")[3]);
-                if (!objects.containsKey(f))
-                    objects.put(f, new ArrayList<MoodleObject>());
-                objects.get(f).add(s);
-            }
-            else
-                continue;
         }
         loaded = true;
     }
 
-    public void drawUI()
+    private void drawUI()
     {
         if(paused)
         {
-            playButton.show();
-            frame = (int) slider.getPos();
+            playButton.show(this);
+            frame = slider.getPos();
             CreateMoodle.Companion.getMplayer().seekTo((int) slider.getPos());
-            slider.update();
-            slider.display();
+            slider.update(this, objects);
+            slider.display(this);
             if (saving)
             {
                 try
@@ -255,12 +258,12 @@ public class CreateMoodleSketch extends PApplet
         }
         else
         {
-            pauseButton.show();
+            pauseButton.show(this);
             if (menu)
                 unsetView();
             menu = false;
         }
-        stopButton.show();
+        stopButton.show(this);
     }
 
     private void unsetView()
@@ -287,7 +290,7 @@ public class CreateMoodleSketch extends PApplet
         });
     }
 
-    public void saveMoodle() throws IOException
+    private void saveMoodle() throws IOException
     {
         List<String> str = new ArrayList<>();
 
@@ -299,6 +302,8 @@ public class CreateMoodleSketch extends PApplet
             {
                 MoodleObject o = entry.getValue().get(j);
                 String line = o.name + " " + o.posX + " " + o.posY + " " + o.time;
+                if (o.name.equals("ring"))
+                    line += " " + o.pressure;
                 str.add(line);
             }
         }
@@ -332,97 +337,5 @@ public class CreateMoodleSketch extends PApplet
     @Override
     public void mouseReleased() {
         touchLock = false;
-    }
-
-    class MoodleButton
-    {
-        int x, y;
-        int width, height;
-        PImage buttonImage;
-        MoodleButton(int x, int y, int w, int h, PImage image)
-        {
-            this.x = x;
-            this.y = y;
-            this.buttonImage = image;
-            this.width = w;
-            this.height = h;
-        }
-
-        boolean isClicked(int x, int y)
-        {
-            if(x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + height)
-                return true;
-            else
-                return false;
-        }
-
-        void show()
-        {
-            image(this.buttonImage, x, y, this.width, this.height);
-        }
-    }
-
-    class MoodleSlider
-    {
-        int x, y;
-        int width;
-        int height;
-        int min, max;
-        int current;
-        int col = 50;
-        boolean lock = false;
-        MoodleSlider(int x, int y, int w, int h, int min, int max)
-        {
-            this.x = x;
-            this.y = y;
-            this.width = w;
-            this.height = h;
-            this.min = min;
-            this.max = max;
-            current = min;
-        }
-
-        void setPos(int pos)
-        {
-            int temp = (this.width * pos) / max;
-            if(temp < this.width -10)
-                current = temp;
-        }
-
-        void update()
-        {
-            if(mousePressed)
-            {
-                if(mouseX > x && mouseX < x + this.width && mouseY > y && mouseY < y+ this.height)
-                    lock = true;
-            }
-            else
-            {
-                col = 50;
-                lock = false;
-            }
-
-            if(lock)
-            {
-                col = 100;
-                if((mouseX) >= x && (mouseX) <= x + width)
-                    current = (mouseX - x);
-            }
-        }
-        void display()
-        {
-            fill(255);
-            rectMode(CORNER);
-            rect(x, y, this.width, this.height);
-            fill(col);
-            rectMode(CENTER);
-            rect(x+current, y+this.height/2, 20, this.height);
-
-        }
-
-        public int getPos()
-        {
-            return (current * max) / this.width;
-        }
     }
 }

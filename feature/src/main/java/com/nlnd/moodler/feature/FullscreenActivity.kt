@@ -2,36 +2,26 @@ package com.nlnd.moodler.feature
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.view.View
 import android.content.Intent.ACTION_OPEN_DOCUMENT
-import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.provider.OpenableColumns
+import android.support.v4.content.FileProvider
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.PopupMenu
 import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import java.io.File
-import android.support.v4.content.FileProvider
-import java.nio.file.Files.size
-import android.content.pm.PackageManager.MATCH_DEFAULT_ONLY
-
-
-
-
-
 
 class FullscreenActivity : AppCompatActivity()
 {
-	private val moodles : List<Moodle> = ArrayList()
+	private var moodles : List<Moodle> = ArrayList()
 	override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen)
-
-		setView()
     }
 
 	private fun setView()
@@ -40,8 +30,7 @@ class FullscreenActivity : AppCompatActivity()
 		val path = this.filesDir.toString() + "/"
 		val directory = File(path)
 		val files = directory.listFiles()
-
-
+		moodles = ArrayList()
 		for (i in files.indices)
 		{
 			if (files[i].getName()[files[i].getName().length - 1] == 'v' &&
@@ -93,6 +82,7 @@ class FullscreenActivity : AppCompatActivity()
 	private fun continueMoodle(position: Int)
 	{
 		val intent = Intent(this, CreateMoodle::class.java)
+		fileName = getFileName(Uri.fromFile(moodles[position].file))
 		intent.putExtra("file", Uri.fromFile(moodles[position].file))
 		intent.putExtra("continue", true);
 		startActivity(intent)
@@ -148,7 +138,7 @@ class FullscreenActivity : AppCompatActivity()
 			fileName = getFileName(mFile)
 			val intent = Intent(this, CreateMoodle::class.java)
 			intent.putExtra("file", mFile)
-			intent.putExtra("continue", false);
+			intent.putExtra("continue", false)
 			startActivity(intent)
 		}
 	}
@@ -161,8 +151,7 @@ class FullscreenActivity : AppCompatActivity()
 	private fun getFileName(uri: Uri): String
 	{
 		var result: String? = null
-		val cut: Int
-		var cut2: Int
+
 		if (uri.scheme == "content")
 		{
 			val cursor = contentResolver.query(uri, null, null, null, null)
@@ -178,17 +167,12 @@ class FullscreenActivity : AppCompatActivity()
 				cursor!!.close()
 			}
 		}
-		if (result == null)
+		else
 		{
-			result = uri.path
+			result = uri.path.split("/")[uri.path.split("/").size - 1]
+
+			result = result.substring(0, result.length - 4)
 		}
-
-		cut = result!!.lastIndexOf('/')
-		cut2 = result.lastIndexOf('.', cut + 1)
-		if (cut2 == -1)
-			cut2 = result.length
-		result = result.substring(cut + 1, cut2)
-
-		return result
+		return result!!
 	}
 }

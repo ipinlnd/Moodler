@@ -1,31 +1,35 @@
 package com.nlnd.moodler.feature
 
-import android.app.ProgressDialog
-import android.content.Context
-import android.net.Uri
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import processing.android.CompatUtils
-import processing.core.PApplet
-import processing.android.PFragment
+import android.app.Activity
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.widget.FrameLayout
+import processing.android.CompatUtils
+import processing.android.PFragment
+import processing.core.PApplet
 import java.io.*
 
 class WatchMoodle : AppCompatActivity()
 {
 	private var sketch : PApplet? = null
-	private var context : Context? = null
 	private var loaded = false
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
-		var ownFile : Uri? = null
+		var ownFile : Uri?
 		super.onCreate(savedInstanceState)
+		requestWindowFeature(Window.FEATURE_NO_TITLE)
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
 		val frame = FrameLayout(this)
 		context = this
 
@@ -88,18 +92,8 @@ class WatchMoodle : AppCompatActivity()
 		val ar = ArrayList<String>()
 		val dis = DataInputStream(FileInputStream(f))
 		val dos: DataOutputStream
-		var newSong = (filesDir.toString() + "/tempSong.mp3")
-		var line = ""
-
-		var progressDialog = ProgressDialog(this,
-				ProgressDialog.STYLE_SPINNER);
-		progressDialog.setIndeterminate(false);
-		progressDialog.setMessage("Loading...");
-		progressDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT,
-				FrameLayout.LayoutParams.WRAP_CONTENT);
-		progressDialog.setCancelable(true);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.show();
+		val newSong = (filesDir.toString() + "/tempSong.mp3")
+		var line : String
 
 		while (true)
 		{
@@ -108,16 +102,20 @@ class WatchMoodle : AppCompatActivity()
 			if (line == "end")
 				break
 		}
-		config = ar.toTypedArray();
+		config = ar.toTypedArray()
 
 		val b = ByteArray(dis.available())
-		dos = DataOutputStream(FileOutputStream(newSong));
+		dos = DataOutputStream(FileOutputStream(newSong))
 		dis.read(b)
 		dos.write(b)
 
 		musicFile = Uri.fromFile(File(newSong))
-		progressDialog.dismiss();
 		loaded = true
+	}
+
+	override fun onDestroy()
+	{
+		super.onDestroy()
 	}
 
 	companion object
@@ -129,6 +127,7 @@ class WatchMoodle : AppCompatActivity()
 		var config: Array<String>? = null
 		var file : Uri? = null
 		var render : Boolean = false
+		var context : Activity? = null
 
 		fun stopMusic()
 		{
@@ -137,7 +136,7 @@ class WatchMoodle : AppCompatActivity()
 
 		fun getCurrentPosition(): Int
 		{
-			return mplayer!!.getCurrentPosition()
+			return mplayer!!.currentPosition
 		}
 
 		fun pauseMusic()
@@ -159,5 +158,6 @@ class WatchMoodle : AppCompatActivity()
 		{
 			mplayer!!.setVolume(0f, 0f)
 		}
+
 	}
 }

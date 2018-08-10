@@ -1,11 +1,10 @@
 package com.nlnd.moodler.feature;
 
-import processing.core.PApplet;
 import processing.core.PGraphics;
 
 public class Sticks extends MoodleObject implements Comparable<Sticks>
 {
-    Sticks(int posX, int posY, int fadeSpeed, float originalSize, int time)
+    Sticks(int posX, int posY, int fadeSpeed, int originalSize, int time)
     {
         this.posX = posX;
         this.posY = posY;
