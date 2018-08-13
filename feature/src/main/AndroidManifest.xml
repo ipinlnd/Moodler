@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nlnd.moodler.feature">
+
+    <application>
+        <activity
+            android:name=".FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:icon="@drawable/app_icon"
+            android:theme="@style/Theme.AppCompat.Light">
+            <intent-filter android:order="1">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\.v3v"
+                    android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CreateMoodle" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".WatchMoodle" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <provider
+            android:authorities="com.nlnd.moodler.feature"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>
