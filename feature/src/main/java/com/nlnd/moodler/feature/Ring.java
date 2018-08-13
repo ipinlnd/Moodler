@@ -27,12 +27,11 @@ public class Ring extends MoodleObject implements Comparable<Ring>
         else if (this.pressure <= .2)
             this.fill = 10;
         else if (this.pressure <= .3)
-            this.fill = 50;
+            this.fill = 20;
         else if (this.pressure <= .4)
             this.fill = 120;
         else
             this.fill = 200;
-        System.out.println(this.fill);
     }
 
     public void reset()

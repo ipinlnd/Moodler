@@ -206,7 +206,7 @@ public class CreateMoodleSketch extends PApplet
                 {
                     Ring s = (new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
                             (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
-                            parseInt(config[i].split(" ")[3]),parseInt(config[i].split(" ")[4]) ));
+                            parseInt(config[i].split(" ")[3]),parseFloat(config[i].split(" ")[4]) ));
                     int f = parseInt(config[i].split(" ")[3]);
                     if (!objects.containsKey(f))
                         objects.put(f, new ArrayList<MoodleObject>());

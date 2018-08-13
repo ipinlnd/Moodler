@@ -40,10 +40,10 @@ class CreateMoodle : AppCompatActivity()
 		super.onCreate(savedInstanceState)
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE)
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-		var ownFile : Uri?
+		val ownFile : Uri?
 		val frame = FrameLayout(this)
 		context = this
 		makeList()
@@ -84,8 +84,8 @@ class CreateMoodle : AppCompatActivity()
 
 		inflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 		layout = inflater!!.inflate(R.layout.toolbox_menu, null)
-		val density = context!!.getResources().getDisplayMetrics()
-		pw = PopupWindow(layout, (density.widthPixels * .8).toInt(), (density.heightPixels * 0.5).toInt(), true)
+		val density = context!!.resources.displayMetrics
+		pw = PopupWindow(layout, (density.widthPixels * .8).toInt(), (density.heightPixels * 0.7).toInt(), true)
 		(layout!!.findViewById(R.id.toolbox_close_button) as Button).setOnClickListener { pw!!.dismiss() }
 		pw!!.isOutsideTouchable = false
 
@@ -96,7 +96,7 @@ class CreateMoodle : AppCompatActivity()
 		val dividerItemDecoration = DividerItemDecoration(rv.context,
 				layoutManager.orientation)
 		rv.addItemDecoration(dividerItemDecoration)
-		val adapter = ToolsRecyclerAdaptor(buttons, context)
+		val adapter = ToolsRecyclerAdaptor(buttons)
 		rv.adapter = adapter
 
 		val saveButton : Button = layout!!.findViewById(R.id.toolbox_save_button)
@@ -126,13 +126,13 @@ class CreateMoodle : AppCompatActivity()
 		}
 	}
 
-	fun loadFile(f : File)
+	private fun loadFile(f : File)
 	{
 		val ar = ArrayList<String>()
 		val dis = DataInputStream(FileInputStream(f))
 		val dos: DataOutputStream
 		val newSong = (filesDir.toString() + "/tempSong.mp3")
-		var line = ""
+		var line : String
 
 		while (true)
 		{
@@ -172,7 +172,7 @@ class CreateMoodle : AppCompatActivity()
 
 		fun getCurrentPosition(): Int
 		{
-			return mplayer!!.getCurrentPosition()
+			return mplayer!!.currentPosition
 		}
 
 		fun pauseMusic()

@@ -9,8 +9,8 @@
         android:id="@+id/image_id"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:backgroundTint="@drawable/method_highlight"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/moodle_method" />
     <TextView
         android:id="@+id/text_id"
         android:layout_width="wrap_content"

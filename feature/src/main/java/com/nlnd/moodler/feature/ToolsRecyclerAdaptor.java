@@ -1,8 +1,8 @@
 package com.nlnd.moodler.feature;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +14,18 @@ import java.util.List;
 
 public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdaptor.CategoryViewHolder>
 {
-    private Activity context;
     private List<MoodleMethod> methods;
     private int selected = 0;
+    @NonNull
     @Override
-    public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.method_list, parent, false);
-        CategoryViewHolder viewHolder = new CategoryViewHolder(v);
-        return viewHolder;
+        return new CategoryViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final CategoryViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, final int position)
     {
         holder.text.setText(methods.get(position).getName());
         if (selected == position)
@@ -60,10 +59,9 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
         return methods.size();
     }
 
-    public ToolsRecyclerAdaptor(List<MoodleMethod> services, Context contex)
+    public ToolsRecyclerAdaptor(List<MoodleMethod> services)
     {
         this.methods = services;
-        this.context = (Activity) contex;
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder{

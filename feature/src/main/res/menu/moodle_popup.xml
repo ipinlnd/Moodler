@@ -12,10 +12,12 @@
     <item
         android:id="@+id/popup_menu_render"
         android:title="@string/render"
+        android:visible="false"
         />
     <item
         android:id="@+id/popup_menu_share"
         android:title="@string/share"
+        android:visible="false"
         />
     <item
         android:id="@+id/popup_menu_continue"

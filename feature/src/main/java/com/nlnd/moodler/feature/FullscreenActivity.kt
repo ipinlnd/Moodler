@@ -155,16 +155,10 @@ class FullscreenActivity : AppCompatActivity()
 		if (uri.scheme == "content")
 		{
 			val cursor = contentResolver.query(uri, null, null, null, null)
-			try
+			if (cursor != null && cursor.moveToFirst())
 			{
-				if (cursor != null && cursor.moveToFirst())
-				{
-					result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-				}
-			}
-			finally
-			{
-				cursor!!.close()
+				result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+				cursor.close()
 			}
 		}
 		else
@@ -173,6 +167,7 @@ class FullscreenActivity : AppCompatActivity()
 
 			result = result.substring(0, result.length - 4)
 		}
+
 		return result!!
 	}
 }
