@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="watch">Watch</string>
-    <string name="delete">Delete</string>
-    <string name="render">Render</string>
-    <string name="share">share</string>
-    <string name="cont">continue</string>
-    <string name="moodle_method">Moodle Method</string>
-</resources>
