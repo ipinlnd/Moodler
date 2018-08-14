@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/popup_menu_watch"
+        android:title="@string/watch"
+        />
+    <item
+        android:id="@+id/popup_menu_delete"
+        android:title="@string/delete"
+        />
+    <item
+        android:id="@+id/popup_menu_render"
+        android:title="@string/render"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/popup_menu_share"
+        android:title="@string/share"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/popup_menu_continue"
+        android:title="@string/cont"
+        />
+
+</menu>
