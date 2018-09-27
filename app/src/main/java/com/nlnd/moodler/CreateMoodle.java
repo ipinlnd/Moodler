@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import processing.android.CompatUtils;
 import processing.android.PFragment;
@@ -39,13 +39,13 @@ import processing.core.PApplet;
 
 public class CreateMoodle extends AppCompatActivity
 {
-    private static View layout;
+    private static View  layout;
     private static PopupWindow pw;
     private List<MoodleMethod> buttons;
     Context context;
     private Uri file;
     private static boolean continueMoodle;
-    private volatile boolean loaded;
+    private boolean loaded;
     private static Uri musicFile;
     private static MediaPlayer mplayer;
     private static int duration;
@@ -54,7 +54,7 @@ public class CreateMoodle extends AppCompatActivity
 
     private void makeList()
     {
-        buttons = new ArrayList<>();
+        buttons = new ArrayList();
         buttons.add(new MoodleMethod("Snow", R.drawable.snow_method));
         buttons.add(new MoodleMethod("Stick", R.drawable.sticks_method));
         buttons.add(new MoodleMethod("Ring", R.drawable.rings_method));
@@ -86,7 +86,7 @@ public class CreateMoodle extends AppCompatActivity
                 ViewGroup.LayoutParams.MATCH_PARENT));
         if (savedInstanceState == null)
         {
-            file = Objects.requireNonNull(getIntent().getExtras()).getParcelable("file");
+            file = getIntent().getExtras().getParcelable("file");
             continueMoodle = getIntent().getExtras().getBoolean("continue");
         }
         else
@@ -106,7 +106,8 @@ public class CreateMoodle extends AppCompatActivity
             {
                 e.printStackTrace();
             }
-            while(!loaded);
+            while(!loaded)
+                continue;
         }
         else
             musicFile = file;
@@ -125,7 +126,6 @@ public class CreateMoodle extends AppCompatActivity
         }
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert inflater != null;
         layout = inflater.inflate(R.layout.toolbox_menu, null);
         DisplayMetrics density = context.getResources().getDisplayMetrics();
         pw = new PopupWindow(layout, (int) (density.widthPixels * .8), (int) (density.heightPixels * 0.7), true);
@@ -186,7 +186,7 @@ public class CreateMoodle extends AppCompatActivity
 
     private void loadFile(File file) throws Exception
     {
-        List<String> ar = new ArrayList<>();
+        List<String> ar = new ArrayList();
         DataInputStream dis = new DataInputStream(new FileInputStream(file));
         DataOutputStream dos;
         String newSong = (getFilesDir().toString() + "/tempSong.mp3");

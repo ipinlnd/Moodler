@@ -5,10 +5,10 @@ import processing.core.PGraphics;
 public abstract class MoodleObject
 {
     public int posX, posY;
-    int red, green, blue;
+    public int red, green, blue;
     public int alpha;
-    int fadeSpeed;
-    int size, originalSize;
+    public int fadeSpeed;
+    public int size, originalSize;
     public int time;
     public float pressure;
     public String name;

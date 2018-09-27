@@ -16,10 +16,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import processing.android.CompatUtils;
 import processing.android.PFragment;
@@ -33,6 +34,7 @@ public class WatchMoodle extends AppCompatActivity
     Boolean loaded;
     private static int duration;
     private Uri musicFile;
+    private PApplet sketch;
     private static String[] config;
     private static MediaPlayer mplayer;
 
@@ -61,7 +63,7 @@ public class WatchMoodle extends AppCompatActivity
                 ViewGroup.LayoutParams.MATCH_PARENT));
         if (savedInstanceState == null)
         {
-            file = Objects.requireNonNull(getIntent().getExtras()).getParcelable("file");
+            file = getIntent().getExtras().getParcelable("file");
             render = getIntent().getExtras().getBoolean("render");
         }
         else
@@ -93,14 +95,14 @@ public class WatchMoodle extends AppCompatActivity
             e.printStackTrace();
         }
 
-        PApplet sketch = new WatchMoodleSketch();
+        sketch = new WatchMoodleSketch();
         PFragment fragment = new PFragment(sketch);
         fragment.setView(frame, this);
     }
 
     private void loadFile(File file) throws Exception
     {
-        List<String> ar = new ArrayList<>();
+        List<String> ar = new ArrayList();
         DataInputStream dis = new DataInputStream(new FileInputStream(file));
         DataOutputStream dos;
         String newSong = (getFilesDir().toString() + "/tempSong.mp3");

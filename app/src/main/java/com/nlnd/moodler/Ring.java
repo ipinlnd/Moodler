@@ -6,8 +6,7 @@ import processing.core.PGraphics;
 
 public class Ring extends MoodleObject implements Comparable<Ring>
 {
-    private int fill;
-
+    private int fill = 0;
     Ring(int posX, int posY, int fadeSpeed, int originalSize, int time, float pressure)
     {
         this.posX = posX;
@@ -56,14 +55,12 @@ public class Ring extends MoodleObject implements Comparable<Ring>
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return this.time;
     }
 
     @Override
-    public int compareTo(@NonNull Ring o)
-    {
+    public int compareTo(@NonNull Ring o) {
         return (this.time - o.time) ;
     }
 }

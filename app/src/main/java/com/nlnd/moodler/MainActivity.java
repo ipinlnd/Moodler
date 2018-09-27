@@ -20,13 +20,14 @@ import android.widget.PopupMenu;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import static android.content.Intent.ACTION_OPEN_DOCUMENT;
 
 public class MainActivity extends AppCompatActivity
 {
     List<Moodle> moodles;
-    static Context context;
+    static Context contex;
     public static String fileName;
 
     @Override
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = this;
+        contex = this;
     }
 
     @Override
@@ -50,16 +51,16 @@ public class MainActivity extends AppCompatActivity
         String path = this.getFilesDir().toString() + "/";
         File directory = new File(path);
         File[] files = directory.listFiles();
-        moodles = new ArrayList<>();
+        moodles = new ArrayList();
 
-        for (File file : files)
+        for (int i = 0; i < files.length; i++)
         {
-            if (file.getName().charAt(file.getName().length() - 1) == 'v' &&
-                    file.getName().charAt(file.getName().length() - 2) == '3' &&
-                    file.getName().charAt(file.getName().length() - 3) == 'v')
+            if (files[i].getName().charAt(files[i].getName().length() - 1) == 'v' &&
+                    files[i].getName().charAt(files[i].getName().length() - 2) == '3' &&
+                    files[i].getName().charAt(files[i].getName().length() - 3) == 'v')
             {
-                moodles.add(new Moodle(file.getName()));
-                moodles.get(moodles.size() - 1).setFile(file);
+                moodles.add(new Moodle(files[i].getName()));
+                moodles.get(moodles.size() - 1).setFile(files[i]);
             }
         }
 
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l)
             {
-                PopupMenu popup = new PopupMenu(context, view);
+                PopupMenu popup = new PopupMenu(contex, view);
                 MenuInflater inflater = popup.getMenuInflater();
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
                 {
@@ -140,12 +141,9 @@ public class MainActivity extends AppCompatActivity
 
     private void deleteMoodle(int i)
     {
-        boolean result = moodles.get(i).getFile().delete();
-        if (result)
-        {
-            moodles.clear();
-            setView();
-        }
+        moodles.get(i).getFile().delete();
+        moodles.clear();
+        setView();
     }
 
     private void watchMoodle(int i)
@@ -170,9 +168,7 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 42 && resultCode == Activity.RESULT_OK)
         {
-            assert data != null;
             Uri mFile = data.getData();
-            assert mFile != null;
             fileName = getFileName(mFile);
             Intent intent = new Intent(this, CreateMoodle.class);
             intent.putExtra("file", mFile);
@@ -187,7 +183,7 @@ public class MainActivity extends AppCompatActivity
 
         if (uri.getScheme().equals("content"))
         {
-            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            Cursor cursor = contex.getContentResolver().query(uri, null, null, null, null);
             if (cursor != null && cursor.moveToFirst())
             {
                 result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));

@@ -14,10 +14,10 @@ import java.util.List;
 
 public class MainPageMoodlesListView extends ArrayAdapter<Moodle>
 {
-    private Activity context;
-    private List<Moodle> moodles;
+    Activity context;
+    List<Moodle> moodles;
 
-    MainPageMoodlesListView(@NonNull Context context, int resource, @NonNull List<Moodle> objects)
+    public MainPageMoodlesListView(@NonNull Context context, int resource, @NonNull List<Moodle> objects)
     {
         super(context, resource, objects);
         this.context = (Activity) context;

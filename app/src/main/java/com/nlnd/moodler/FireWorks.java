@@ -8,11 +8,10 @@ import processing.core.PGraphics;
 
 class FireWorks extends MoodleObject implements Comparable<FireWorks>
 {
-    private int x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6;
-    private int sx1, sy1, sx2, sy2, sx3, sy3, sx4, sy4, sx5, sy5, sx6, sy6;
-    private int x11, y11, x21, y21, x31, y31, x41, y41, x51, y51, x61, y61;
-    private int sx11, sy11, sx21, sy21, sx31, sy31, sx41, sy41, sx51, sy51, sx61, sy61;
-
+    private int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6;
+    private int sx1,sy1,sx2,sy2,sx3,sy3,sx4,sy4,sx5,sy5,sx6,sy6;
+    private int x11,y11,x21,y21,x31,y31,x41,y41,x51,y51,x61,y61;
+    private int sx11,sy11,sx21,sy21,sx31,sy31,sx41,sy41,sx51,sy51,sx61,sy61;
     FireWorks(int x, int y, int t)
     {
         this.posX = x;
@@ -22,19 +21,6 @@ class FireWorks extends MoodleObject implements Comparable<FireWorks>
         x11 = x21 = x31 = x41 = x51 = x61 = x;
         y1 = y2 = y3 = y4 = y5 = y6 = y;
         y11 = y21 = y31 = y41 = y51 = y61 = y;
-
-        initSXYs();
-
-        alpha = 255;
-        this.red = x % 255;
-        this.blue = y % 255;
-        this.green = (x * y) % 255;
-        this.size = 5;
-        name = "fireworks";
-    }
-
-    private void initSXYs()
-    {
         Random r = new Random();
         sy1 = r.nextInt(5); sx1 = r.nextInt(5);
         sy2 = r.nextInt(5); sx2 = r.nextInt(5);
@@ -48,6 +34,13 @@ class FireWorks extends MoodleObject implements Comparable<FireWorks>
         sy41 = r.nextInt(5); sx41 = r.nextInt(5);
         sy51 = r.nextInt(5); sx51 = r.nextInt(5);
         sy61 = r.nextInt(5); sx61 = r.nextInt(5);
+
+        alpha = 255;
+        this.red = x % 255;
+        this.blue = y % 255;
+        this.green = (x * y) % 255;
+        this.size = 5;
+        name = "fireworks";
     }
 
     @Override
@@ -55,7 +48,6 @@ class FireWorks extends MoodleObject implements Comparable<FireWorks>
     {
         this.alpha -=2;
         size -= 1;
-
         y1 += sy1; x1 += sx1;
         y2 += sy2; x2 += sx2;
         y3 += sy3; x3 -= sx3;
@@ -75,18 +67,18 @@ class FireWorks extends MoodleObject implements Comparable<FireWorks>
     {
         g.fill(red, green, blue, this.alpha);
         g.stroke(red, green, blue, this.alpha);
-        g.ellipse(x1, y1, size, size);
-        g.ellipse(x2, y2, size, size);
-        g.ellipse(x3, y3, size, size);
-        g.ellipse(x4, y4, size, size);
-        g.ellipse(x5, y5, size, size);
-        g.ellipse(x6, y6, size, size);
-        g.ellipse(x11, y11, size, size);
-        g.ellipse(x21, y21, size, size);
-        g.ellipse(x31, y31, size, size);
-        g.ellipse(x41, y41, size, size);
-        g.ellipse(x51, y51, size, size);
-        g.ellipse(x61, y61, size, size);
+        g.ellipse(x1,y1,size,size);
+        g.ellipse(x2,y2,size,size);
+        g.ellipse(x3,y3,size,size);
+        g.ellipse(x4,y4,size,size);
+        g.ellipse(x5,y5,size,size);
+        g.ellipse(x6,y6,size,size);
+        g.ellipse(x11,y11,size,size);
+        g.ellipse(x21,y21,size,size);
+        g.ellipse(x31,y31,size,size);
+        g.ellipse(x41,y41,size,size);
+        g.ellipse(x51,y51,size,size);
+        g.ellipse(x61,y61,size,size);
     }
 
     @Override
