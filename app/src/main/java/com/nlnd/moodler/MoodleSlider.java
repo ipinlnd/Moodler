@@ -10,17 +10,17 @@ class MoodleSlider
     private int x, y;
     private int width;
     private int height;
-    private int min, max;
+    private int max;
     private int current;
     private int col = 50;
     private boolean lock = false;
+
     MoodleSlider(int x, int y, int w, int h, int min, int max)
     {
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
-        this.min = min;
         this.max = max;
         current = min;
     }
