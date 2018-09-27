@@ -46,8 +46,8 @@ public class Snow extends MoodleObject implements Comparable<Snow>
     }
 
     @Override
-    public int compareTo(Snow o) {
+    public int compareTo(Snow o)
+    {
         return (this.time - o.time) ;
     }
-
 }

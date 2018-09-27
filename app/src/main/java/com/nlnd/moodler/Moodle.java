@@ -10,7 +10,7 @@ class Moodle
     private String artist;
     private File file;
 
-    public Moodle(String name)
+    Moodle(String name)
     {
         this.name = name;
     }

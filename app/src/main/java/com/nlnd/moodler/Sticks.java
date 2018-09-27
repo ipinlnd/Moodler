@@ -1,5 +1,7 @@
 package com.nlnd.moodler;
 
+import android.support.annotation.NonNull;
+
 import processing.core.PGraphics;
 
 public class Sticks extends MoodleObject implements Comparable<Sticks>
@@ -40,13 +42,15 @@ public class Sticks extends MoodleObject implements Comparable<Sticks>
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return this.time;
 
     }
 
     @Override
-    public int compareTo(Sticks o) {
+    public int compareTo(@NonNull Sticks o)
+    {
         return (this.time - o.time) ;
     }
 }

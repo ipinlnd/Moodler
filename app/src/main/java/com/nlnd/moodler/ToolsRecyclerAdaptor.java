@@ -1,6 +1,5 @@
 package com.nlnd.moodler;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -25,13 +24,14 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, int position)
     {
         holder.text.setText(methods.get(position).getName());
         if (selected == position)
             holder.text.setTextColor(Color.RED);
         else
             holder.text.setTextColor(Color.BLACK);
+
         holder.image.setImageResource(methods.get(position).getId());
         holder.image.setAdjustViewBounds(true);
         holder.image.setOnClickListener(new View.OnClickListener()
@@ -39,15 +39,15 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
             @Override
             public void onClick(View view)
             {
-                if (methods.get(position).getName().equals("Firework"))
+                if (methods.get(holder.getAdapterPosition()).getName().equals("Firework"))
                     CreateMoodleSketch.method = CreateMoodleSketch.Method.firework;
-                if (methods.get(position).getName().equals("Snow"))
+                if (methods.get(holder.getAdapterPosition()).getName().equals("Snow"))
                     CreateMoodleSketch.method = CreateMoodleSketch.Method.snow;
-                if (methods.get(position).getName().equals("Stick"))
+                if (methods.get(holder.getAdapterPosition()).getName().equals("Stick"))
                     CreateMoodleSketch.method = CreateMoodleSketch.Method.sticks;
-                if (methods.get(position).getName().equals("Ring"))
+                if (methods.get(holder.getAdapterPosition()).getName().equals("Ring"))
                     CreateMoodleSketch.method = CreateMoodleSketch.Method.rings;
-                selected = position;
+                selected = holder.getAdapterPosition();
                 notifyDataSetChanged();
             }
         });
@@ -59,17 +59,19 @@ public class ToolsRecyclerAdaptor extends RecyclerView.Adapter<ToolsRecyclerAdap
         return methods.size();
     }
 
-    public ToolsRecyclerAdaptor(List<MoodleMethod> services)
+    ToolsRecyclerAdaptor(List<MoodleMethod> services)
     {
         this.methods = services;
     }
 
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder{
+    public static class CategoryViewHolder extends RecyclerView.ViewHolder
+    {
 
         protected ImageView image;
         protected TextView text;
 
-        public CategoryViewHolder(View itemView) {
+        CategoryViewHolder(View itemView)
+        {
             super(itemView);
             image = itemView.findViewById(R.id.image_id);
             text = itemView.findViewById(R.id.text_id);

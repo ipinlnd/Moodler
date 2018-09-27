@@ -12,13 +12,10 @@ public class WatchMoodleSketch extends PApplet
 {
     private int frame = 0;
     private Map<Integer, List<MoodleObject>> objects;
-
     private boolean paused;
     private boolean touchLock = false;
-
     private MoodleButton pauseButton, playButton, stopButton;
     private MoodleSlider slider;
-
     private boolean render = false;
     private PGraphics pGraphics;
     private boolean loaded = false;
@@ -30,7 +27,8 @@ public class WatchMoodleSketch extends PApplet
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
         WatchMoodle.stopMusic();
     }
@@ -51,10 +49,9 @@ public class WatchMoodleSketch extends PApplet
 
         pGraphics = g;
 
-        render = WatchMoodle.getRender();
-
         loadMoodle();
 
+        render = WatchMoodle.getRender();
         if (render)
         {
             WatchMoodle.mute();
@@ -159,59 +156,43 @@ public class WatchMoodleSketch extends PApplet
         multY = height / theirY;
         for(int i=1;i<config.length;i++)
         {
+            int f = parseInt(config[i].split(" ")[3]);
+            if (!objects.containsKey(f))
+                objects.put(f, new ArrayList<MoodleObject>());
+            MoodleObject s = null;
+
             switch (config[i].split(" ")[0])
             {
                 case "stick":
-                {
-                    Sticks s = new Sticks((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                            parseInt(config[i].split(" ")[3]));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
+                    s = new Sticks((int) (parseInt(config[i].split(" ")[1]) * multX),
+                                   (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                                   parseInt(config[i].split(" ")[3]));
                     break;
-                }
                 case "snow":
-                {
-                    Snow s = (new Snow((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                            parseInt(config[i].split(" ")[3])));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
+                    s = new Snow((int) (parseInt(config[i].split(" ")[1]) * multX),
+                                 (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+                                 parseInt(config[i].split(" ")[3]));
                     break;
-                }
                 case "ring":
-                {
-                    Ring s = (new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
-                            parseInt(config[i].split(" ")[3]),parseFloat(config[i].split(" ")[4])));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
+                    s = new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
+                                 (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
+                                 parseInt(config[i].split(" ")[3]),parseFloat(config[i].split(" ")[4]));
                     break;
-                }
                 case "fireworks":
-                {
-                    FireWorks s = (new FireWorks((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY),
-                        parseInt(config[i].split(" ")[3])));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
+                    s = new FireWorks((int) (parseInt(config[i].split(" ")[1]) * multX),
+                                      (int) (parseInt(config[i].split(" ")[2]) * multY),
+                                      parseInt(config[i].split(" ")[3]));
                     break;
-                }
             }
+            if (s != null)
+                objects.get(f).add(s);
         }
         loaded = true;
     }
 
     @Override
-    public void mouseReleased() {
+    public void mouseReleased()
+    {
         touchLock = false;
     }
 
