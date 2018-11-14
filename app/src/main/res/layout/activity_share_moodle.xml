@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ShareMoodle">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<EditText
+			android:id="@+id/share_moodle_name_edit_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="5dp"
+			android:layout_marginTop="10dp"
+			android:layout_marginRight="5dp"
+			android:hint="@string/name_hint" />
+
+		<Button
+			android:id="@+id/share_moodle_browse_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="start"
+			android:layout_marginStart="5dp"
+			android:background="@drawable/button_background"
+			android:text="@string/browse" />
+
+		<TextView
+			android:id="@+id/share_moodle_location"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginTop="10dp"
+			android:layout_marginEnd="10dp"
+			android:text="No location specified"
+			android:textColor="@color/colorPrimary" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"
+			android:layout_marginTop="80dp"
+			android:layout_marginRight="10dp"
+			android:text="@string/rendering_warning"
+			android:textColor="@color/blue"
+			android:textSize="20sp" />
+	</LinearLayout>
+
+	<Button
+		android:id="@+id/share_moodle_start_button"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginBottom="10dp"
+		android:background="@drawable/button_background"
+		android:text="@string/start" />
+</RelativeLayout>

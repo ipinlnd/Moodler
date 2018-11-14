@@ -10,209 +10,211 @@ import processing.core.PGraphics;
 
 public class WatchMoodleSketch extends PApplet
 {
-    private int frame = 0;
-    private Map<Integer, List<MoodleObject>> objects;
+	private int frame = 0;
+	private Map<Integer, List<MoodleObject>> objects;
 
-    private boolean paused;
-    private boolean touchLock = false;
+	private boolean paused;
+	private boolean touchLock = false;
 
-    private MoodleButton pauseButton, playButton, stopButton;
-    private MoodleSlider slider;
+	private MoodleButton pauseButton, playButton, stopButton;
+	private MoodleSlider slider;
 
-    private boolean render = false;
-    private PGraphics pGraphics;
-    private boolean loaded = false;
+	private boolean render = false;
+	private PGraphics pGraphics;
+	private boolean loaded = false;
 
-    @Override
-    public void settings()
-    {
-        fullScreen();
-    }
+	@Override
+	public void settings()
+	{
+		fullScreen();
+	}
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        WatchMoodle.stopMusic();
-    }
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		WatchMoodle.stopMusic();
+	}
 
-    @Override
-    public void setup()
-    {
-        background(0);
-        orientation(LANDSCAPE);
+	@Override
+	public void setup()
+	{
+		background(0);
+		orientation(LANDSCAPE);
 
-        objects = new HashMap<>();
+		objects = new HashMap<>();
 
-        pauseButton = new MoodleButton(30, height - 100, 95, 95, loadImage("pause_button.png"));
-        playButton = new MoodleButton(30, height - 100, 95, 95, loadImage("play_button.png"));
-        stopButton = new MoodleButton(30+ 95 - 10, height - 100, 95, 95, loadImage("stop_button.png"));
-        slider = new MoodleSlider(220, height - 50, width - 240, 50,0, WatchMoodle.getMplayer().getDuration());
-        loaded = false;
+		pauseButton = new MoodleButton(30, height - 100, 95, 95, loadImage("pause_button.png"));
+		playButton = new MoodleButton(30, height - 100, 95, 95, loadImage("play_button.png"));
+		stopButton = new MoodleButton(30 + 95 - 10, height - 100, 95, 95, loadImage("stop_button.png"));
+		slider = new MoodleSlider(220, height - 50, width - 240, 50, 0, WatchMoodle.getMplayer().getDuration());
+		loaded = false;
 
-        pGraphics = g;
+		pGraphics = g;
 
-        render = WatchMoodle.getRender();
+		render = WatchMoodle.getRender();
 
-        loadMoodle();
+		loadMoodle();
 
-        if (render)
-        {
-            WatchMoodle.mute();
-            paused = false;
-            WatchMoodle.startMusic();
-        }
-        else
-            paused = true;
+		if (render)
+		{
+			WatchMoodle.mute();
+			paused = false;
+			WatchMoodle.startMusic();
+		}
+		else
+			paused = true;
 
-        touchLock = false;
-    }
+		touchLock = false;
+	}
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-    }
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+	}
 
-    @Override
-    public void draw()
-    {
-        background(0);
-        if (!loaded)
-            return;
+	@Override
+	public void draw()
+	{
+		background(0);
+		if (!loaded)
+			return;
 
-        if (!render)
-            drawUI();
+		if (!render)
+			drawUI();
 
-        if(!paused)
-        {
-            frame = WatchMoodle.getCurrentPosition();
-            slider.setPos(WatchMoodle.getCurrentPosition());
-            slider.update(this, objects);
-        }
+		if (!paused)
+		{
+			frame = WatchMoodle.getCurrentPosition();
+			slider.setPos(WatchMoodle.getCurrentPosition());
+			slider.update(this, objects);
+		}
 
-        if(frame == WatchMoodle.getDuration())
-        {
-            paused = true;
-            WatchMoodle.pauseMusic();
-        }
+		if (frame == WatchMoodle.getDuration())
+		{
+			paused = true;
+			WatchMoodle.pauseMusic();
+		}
 
-        if(mousePressed && !touchLock)
-        {
-            if(playButton.isClicked(mouseX, mouseY) || pauseButton.isClicked(mouseX, mouseY) )
-            {
-                paused = !paused;
-                touchLock = true;
-                if(paused)
-                    WatchMoodle.pauseMusic();
-                else
-                    WatchMoodle.startMusic();
-            }
-            else if(stopButton.isClicked(mouseX, mouseY))
-            {
-                paused = true;
-                frame = 0;
-                WatchMoodle.musicSeekTo(0);
-                WatchMoodle.pauseMusic();
-            }
-        }
-        for (int i = frame - 500; i <= frame; i++)
-        {
-            if (!objects.containsKey(i))
-                continue;
-            for (int j = 0; j <objects.get(i).size(); j++)
-            {
-                if (i == frame)
-                    objects.get(i).get(j).reset();
-                if (!paused)
-                    objects.get(i).get(j).update();
-                objects.get(i).get(j).display(pGraphics);
-            }
-        }
-    }
+		if (mousePressed && !touchLock)
+		{
+			if (playButton.isClicked(mouseX, mouseY) || pauseButton.isClicked(mouseX, mouseY))
+			{
+				paused = !paused;
+				touchLock = true;
+				if (paused)
+					WatchMoodle.pauseMusic();
+				else
+					WatchMoodle.startMusic();
+			}
+			else if (stopButton.isClicked(mouseX, mouseY))
+			{
+				paused = true;
+				frame = 0;
+				WatchMoodle.musicSeekTo(0);
+				WatchMoodle.pauseMusic();
+			}
+		}
+		for (int i = frame - 500; i <= frame; i++)
+		{
+			if (!objects.containsKey(i))
+				continue;
+			for (int j = 0; j < objects.get(i).size(); j++)
+			{
+				if (i == frame)
+					objects.get(i).get(j).reset();
+				if (!paused)
+					objects.get(i).get(j).update();
+				objects.get(i).get(j).display(pGraphics);
+			}
+		}
+	}
 
-    private void drawUI()
-    {
-        if(paused)
-        {
-            playButton.show(this);
-            frame = slider.getPos();
-            WatchMoodle.getMplayer().seekTo((int) slider.getPos());
-            slider.update(this, objects);
-            slider.display(this);
-        }
-        else
-        {
-            pauseButton.show(this);
-        }
-        stopButton.show(this);
-    }
+	private void drawUI()
+	{
+		if (paused)
+		{
+			playButton.show(this);
+			frame = slider.getPos();
+			WatchMoodle.getMplayer().seekTo(slider.getPos());
+			slider.update(this, objects);
+			slider.display(this);
+		}
+		else
+		{
+			pauseButton.show(this);
+		}
+		stopButton.show(this);
+	}
 
-    private void loadMoodle()
-    {
-        float multX, multY;
-        float theirX, theirY;
-        String[] config = WatchMoodle.getConfig();
-        theirX = Float.parseFloat(config[1].split(" ")[0]);
-        theirY = Float.parseFloat(config[1].split(" ")[1]);
+	private void loadMoodle()
+	{
+		float multX, multY;
+		float theirX, theirY;
+		String[] config = WatchMoodle.getConfig();
+		theirX = Float.parseFloat(config[1].split(" ")[0]);
+		theirY = Float.parseFloat(config[1].split(" ")[1]);
 
-        multX = width / theirX;
-        multY = height / theirY;
-        for(int i=1;i<config.length;i++)
-        {
-            switch (config[i].split(" ")[0])
-            {
-                case "stick":
-                {
-                    Sticks s = new Sticks((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                            parseInt(config[i].split(" ")[3]));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
-                    break;
-                }
-                case "snow":
-                {
-                    Snow s = (new Snow((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
-                            parseInt(config[i].split(" ")[3])));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
-                    break;
-                }
-                case "ring":
-                {
-                    Ring s = (new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
-                            parseInt(config[i].split(" ")[3]),parseFloat(config[i].split(" ")[4])));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
-                    break;
-                }
-                case "fireworks":
-                {
-                    FireWorks s = (new FireWorks((int) (parseInt(config[i].split(" ")[1]) * multX),
-                            (int) (parseInt(config[i].split(" ")[2]) * multY),
-                        parseInt(config[i].split(" ")[3])));
-                    int f = parseInt(config[i].split(" ")[3]);
-                    if (!objects.containsKey(f))
-                        objects.put(f, new ArrayList<MoodleObject>());
-                    objects.get(f).add(s);
-                    break;
-                }
-            }
-        }
-        loaded = true;
-    }
+		multX = width / theirX;
+		multY = height / theirY;
+		for (int i = 1; i < config.length; i++)
+		{
+			switch (config[i].split(" ")[0])
+			{
+				case "stick":
+				{
+					Sticks s = new Sticks((int) (parseInt(config[i].split(" ")[1]) * multX),
+							(int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+							parseInt(config[i].split(" ")[3]));
+					int f = parseInt(config[i].split(" ")[3]);
+					if (!objects.containsKey(f))
+						objects.put(f, new ArrayList<MoodleObject>());
+					objects.get(f).add(s);
+					break;
+				}
+				case "snow":
+				{
+					Snow s = (new Snow((int) (parseInt(config[i].split(" ")[1]) * multX),
+							(int) (parseInt(config[i].split(" ")[2]) * multY), 5, 10,
+							parseInt(config[i].split(" ")[3])));
+					int f = parseInt(config[i].split(" ")[3]);
+					if (!objects.containsKey(f))
+						objects.put(f, new ArrayList<MoodleObject>());
+					objects.get(f).add(s);
+					break;
+				}
+				case "ring":
+				{
+					Ring s = (new Ring((int) (parseInt(config[i].split(" ")[1]) * multX),
+							(int) (parseInt(config[i].split(" ")[2]) * multY), 5, 5,
+							parseInt(config[i].split(" ")[3]), parseFloat(config[i].split(" ")[4])));
+					int f = parseInt(config[i].split(" ")[3]);
+					if (!objects.containsKey(f))
+						objects.put(f, new ArrayList<MoodleObject>());
+					objects.get(f).add(s);
+					break;
+				}
+				case "fireworks":
+				{
+					FireWorks s = (new FireWorks((int) (parseInt(config[i].split(" ")[1]) * multX),
+							(int) (parseInt(config[i].split(" ")[2]) * multY),
+							parseInt(config[i].split(" ")[3])));
+					int f = parseInt(config[i].split(" ")[3]);
+					if (!objects.containsKey(f))
+						objects.put(f, new ArrayList<MoodleObject>());
+					objects.get(f).add(s);
+					break;
+				}
+			}
+		}
+		loaded = true;
+	}
 
-    @Override
-    public void mouseReleased() {
-        touchLock = false;
-    }
+	@Override
+	public void mouseReleased()
+	{
+		touchLock = false;
+	}
 
 }

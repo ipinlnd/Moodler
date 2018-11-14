@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="watch">Watch</string>
-    <string name="delete">Delete</string>
-    <string name="render">Render</string>
-    <string name="share">share</string>
-    <string name="cont">continue</string>
-    <string name="moodle_method">Moodle Method</string>
+	<string name="watch">Watch</string>
+	<string name="delete">Delete</string>
+	<string name="render">Render</string>
+	<string name="share">share</string>
+	<string name="cont">continue</string>
+	<string name="moodle_method">Moodle Method</string>
+	<string name="name_hint">Name to be saved as</string>
+	<string name="browse">Browse</string>
+	<string name="rendering_warning">Rendering the moodle will take as long as the moodle\'s real length. Please do not switch apps while rendering is taking place</string>
+	<string name="start">Start</string>
 </resources>
